@@ -1,7 +1,6 @@
 // implementation of The Big Game
 // runs code once all images have been loaded, ensures that game doesnt start without graphics being available
 window.addEventListener("load", function () {
-    
 
     // initializes the canvas
     const canvas = document.getElementById("canvas1");
@@ -394,17 +393,3 @@ window.addEventListener("load", function () {
 
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
