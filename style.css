@@ -22,8 +22,3 @@ body {
     display: none;
 
 }
-
-html, body {
-    touch-action: auto;
-}
-
