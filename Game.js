@@ -13,13 +13,16 @@ window.addEventListener("load", function () {
     // stores the team that is chosen, starts as empty team ""
     let team = "";
 
+    const buttonWidth = 100;
+    const buttonHeight = 100;
+
     // class creating an object for mouseevents
     class InputHandler {
         constructor() {
             this.keys = [];
             window.addEventListener('touchstart', e => {
-                
-                if(stage === 2){
+
+                if (stage === 2) {
                     this.keys.push(true);
                     console.log(e.touches[0].clientX, this.keys);
                 }
@@ -35,9 +38,15 @@ window.addEventListener("load", function () {
                 if (stage === 0) {
                     stage++;
                 }
-                
+                if (stage === 2 && e.touches[0].clientX > canvas.width / 2 - buttonWidth / 2 && e.touches[0].clientX < canvas.width / 2 + buttonWidth / 2 && e.touches[0].clientY > canvas.height * 4 / 5 && e.touches[0].clientY < canvas.height * 4 / 5 + buttonHeight && ball.isKicked()) {
+                    reset();
+                }
+
             });
 
+        }
+        resetKeys() {
+            this.keys = [];
         }
     }
     // class creating object for the ball
@@ -51,10 +60,11 @@ window.addEventListener("load", function () {
             this.fall = false;
             this.x = gameWidth / 2 - this.width / 2;
             this.y = gameHeight * 6 / 7;
-            if (ghost === false){
+            this.kicked = false;
+            if (ghost === false) {
                 this.image = document.getElementById("footballImage");
             }
-            else{
+            else {
                 this.image = document.getElementById("ghostballImage");
             }
         }
@@ -93,12 +103,26 @@ window.addEventListener("load", function () {
 
             this.width = ball.width * 0.99;
             this.height = ball.height * 0.99;
-            return this.fall;
+            this.kicked = this.fall;
+            return this.kicked;
         }
 
 
         getX() {
             return this.x;
+        }
+
+        isKicked() {
+            return this.kicked;
+        }
+
+        reset() {
+            this.x = this.gameWidth / 2 - this.width / 2;
+            this.y = this.gameHeight * 6 / 7;
+            this.fall = false;
+            this.width = 45;
+            this.height = 75;
+            this.kicked = false;
         }
     }
     // class creating object for the goal
@@ -147,12 +171,12 @@ window.addEventListener("load", function () {
             this.gameWidth = gameWidth;
             this.gameHeight = gameHeight;
             this.width = gameWidth / 3;
-            this.height = gameHeight / 3.5;
+            this.height = gameWidth / 3;
             this.x = x - this.width / 2;
             this.y = y - this.height / 2;
             this.image = document.getElementById("calImage");
         }
-        draw(context){
+        draw(context) {
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
     }
@@ -161,13 +185,13 @@ window.addEventListener("load", function () {
         constructor(gameWidth, gameHeight, x, y) {
             this.gameWidth = gameWidth;
             this.gameHeight = gameHeight;
-            this.width = gameWidth / 4;
-            this.height = gameHeight / 4;
+            this.width = gameWidth / 3;
+            this.height = gameWidth / 3;
             this.x = x - this.width / 2;
             this.y = y - this.height / 2;
             this.image = document.getElementById("stanfordImage");
         }
-        draw(context){
+        draw(context) {
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
     }
@@ -183,22 +207,22 @@ window.addEventListener("load", function () {
             this.initialY = this.y;
             this.falling = false;
         }
-        draw(context, color){
+        draw(context, color) {
             context.fillStyle = color;
             context.fillRect(this.x, this.y, this.width, this.height);
         }
 
-        jump(){
+        jump() {
             this.y -= 1;
         }
-        fall(){
+        fall() {
             this.y += 1;
         }
 
-        getY(){
+        getY() {
             return this.y;
         }
-        getOffset(){
+        getOffset() {
             return this.initialY - this.y;
         }
     }
@@ -213,7 +237,7 @@ window.addEventListener("load", function () {
             this.y = y;
             this.direction = 1;
         }
-        draw(context){
+        draw(context) {
             context.textAlign = "center";
             context.font = "30px Arial";
             context.fillStyle = "white";
@@ -221,11 +245,11 @@ window.addEventListener("load", function () {
             context.fillText("Touch the screen to begin!", this.x, this.y + 50);
         }
 
-        move(){
+        move() {
             this.y += 3 * this.direction;
         }
 
-        getY(){
+        getY() {
             return this.y;
         }
     }
@@ -240,13 +264,28 @@ window.addEventListener("load", function () {
             this.y = y - this.height / 2;
             this.image = document.getElementById("axeImage");
         }
-        draw(context){
+        draw(context) {
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        }
+    }
+
+    class Button {
+        constructor(gameWidth, gameHeight, x, y, width, height) {
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.width = width;
+            this.height = height;
+            this.x = x - this.width / 2;
+            this.y = y;
+            this.image = document.getElementById("retryButton");
+        }
+        draw(context) {
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
     }
     // class creating object for the referee
     class Referee {
-        
+
     }
 
     const input = new InputHandler();
@@ -259,21 +298,16 @@ window.addEventListener("load", function () {
     //array containing all the fans
     const fans = [];
     //for loop that draws 5 rows of 10 fans in the top half of the screen and adds them to the fans array
-    for(let i = 0; i < 5; i++){
-        for(let j = 0; j < 10; j++){
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 10; j++) {
             fans.push(new Fan(canvas.width, canvas.height, canvas.width * (j + 1) / 11, canvas.height * (i + 1) / 11));
         }
     }
     // object representing the welcome sign in stage 1
     const welcomeSign = new WelcomeSign(canvas.width, canvas.height, canvas.width / 2, canvas.height / 2);
-    const ghostballs = [];
-    // for loop holding the 5 ghost balls
-    for(let i = 0; i < 5; i++){
-        ghostballs.push(new Ball(canvas.width, canvas.height, true));
-    }
 
     // function that draws the field, fieldgoal, and ball (just cause this code is repeated multiple times)
-    function drawBasicFBallSetup(){
+    function drawBasicFBallSetup() {
         field.draw(ctx);
         fieldgoal.draw(ctx);
         ball.draw(ctx);
@@ -289,17 +323,17 @@ window.addEventListener("load", function () {
             axe.draw(ctx);
             // draws the welcome sign and moves it up and down
             welcomeSign.draw(ctx);
-            if (welcomeSign.getY() >= canvas.height * 3 / 4){
+            if (welcomeSign.getY() >= canvas.height * 3 / 4) {
                 welcomeSign.direction = -1;
             }
-            if (welcomeSign.getY() <= canvas.height / 4){
+            if (welcomeSign.getY() <= canvas.height / 4) {
                 welcomeSign.direction = 1;
             }
             welcomeSign.move();
         }
 
         // second stage of game, choose team
-        if(stage === 1){
+        if (stage === 1) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             // draws the two sides
             ctx.fillStyle = "red";
@@ -312,7 +346,7 @@ window.addEventListener("load", function () {
             stanfordLogo.draw(ctx);
             calLogo.draw(ctx);
             ctx.fillStyle = "white";
-            ctx.fillText("Choose your team:", canvas.width / 2, canvas.height / 4);            
+            ctx.fillText("Choose your team:", canvas.width / 2, canvas.height / 4);
         }
 
         // third stage of game, actual gameplay
@@ -322,7 +356,7 @@ window.addEventListener("load", function () {
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height / 2);
             // draws the fans on top of the white background, makes them color of team chosen
-            for(let i = 0; i < fans.length; i++){
+            for (let i = 0; i < fans.length; i++) {
                 if (team === "stanford") {
                     fans[i].draw(ctx, "red");
                 }
@@ -334,56 +368,65 @@ window.addEventListener("load", function () {
             if (input.keys.indexOf(true) === -1) {
                 drawBasicFBallSetup();
                 ball.moveLR();
-                
+
             }
             // if kick occurs, draws the field, fieldgoal, and ball and animates ball kick
             if (input.keys.indexOf(true) !== -1) {
                 drawBasicFBallSetup();
+                
                 //ball.kick returns a boolean true when kick happens
                 if (ball.kick()) {
                     // if kick is good, prints message on screen that player has scored for their chosen team
                     if (ball.getX() > fieldgoal.getX() + fieldgoal.getWidth() * 0.1 && ball.getX() < fieldgoal.getX() + fieldgoal.getWidth() - fieldgoal.getWidth() * 0.1) {
                         ctx.font = "30px Trebuchet MS";
-                        if(team === "stanford"){
+                        if (team === "stanford") {
                             ctx.fillStyle = "red";
                         }
-                        if(team === "cal"){
+                        if (team === "cal") {
                             ctx.fillStyle = "navy";
                         }
                         ctx.textAlign = "center";
                         ctx.fillText("You scored for " + team.toUpperCase(), canvas.width / 2, canvas.height * 4 / 5);
                         // makes fans jump up and down
-                        for(let i = 0; i < fans.length; i++){
-                            if(fans[i].getOffset() === 0){
+                        for (let i = 0; i < fans.length; i++) {
+                            if (fans[i].getOffset() === 0) {
                                 fans[i].falling = false;
                             }
-                             if(fans[i].getOffset() <= 10 && fans[i].falling === false){
+                            if (fans[i].getOffset() <= 10 && fans[i].falling === false) {
                                 fans[i].jump();
-                                if(fans[i].getOffset() >= 10){
+                                if (fans[i].getOffset() >= 10) {
                                     fans[i].falling = true;
                                 }
-                             }
-                             if(fans[i].falling){
+                            }
+                            if (fans[i].falling) {
                                 fans[i].falling = true;
                                 fans[i].fall();
-                             }
+                            }
                         }
                     }
                     // prints missed message to screen if kick is not good
-                    else {
+                    else if (ball.isKicked())  {
                         ctx.font = "30px Arial";
                         ctx.fillStyle = "black";
                         ctx.textAlign = "center";
-                        ctx.fillText("Missed:(", canvas.width/2, canvas.height * 4 / 5);
+                        ctx.fillText("Missed:(", canvas.width / 2, canvas.height * 3/4);
+                        const retryButton = new Button(canvas.width, canvas.height, canvas.width / 2, canvas.height * 4 / 5, buttonWidth, buttonHeight);
+                        retryButton.draw(ctx);
                     }
                 }
             }
         }
 
-        
+
         // animates this function (animate), so that it runs repeatedly
         requestAnimationFrame(animate);
 
+    }
+
+    function reset() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ball.reset();
+        input.resetKeys();
     }
 
 
