@@ -139,8 +139,8 @@ window.addEventListener("load", function () {
         constructor(gameWidth, gameHeight) {
             this.gameWidth = gameWidth;
             this.gameHeight = gameHeight;
-            this.width = 108;
-            this.height = 200;
+            this.width = 2*108;
+            this.height = 1.5*200;
             this.x = gameWidth / 2 - this.width / 2;
             this.y = gameHeight * 2 / 5;
             this.image = document.getElementById("fieldgoalImage");
@@ -370,7 +370,10 @@ window.addEventListener("load", function () {
     //for loop that draws 5 rows of 10 fans in the top half of the screen and adds them to the fans array
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 5; j++) {
-            fans.push(new Fan(canvas.width*2, canvas.height*2, canvas.width * (j + 1) / 6, canvas.height * (i + 1) / 11));
+            if(!(i == 4 && j == 2)){
+                fans.push(new Fan(canvas.width*2, canvas.height*2, canvas.width * (j + 1) / 6, canvas.height * (i + 1) / 11));
+
+            }
         }
     }
     // object representing the welcome sign in stage 1
