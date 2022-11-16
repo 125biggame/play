@@ -1,7 +1,7 @@
+
 // implementation of The Big Game
 // runs code once all images have been loaded, ensures that game doesnt start without graphics being available
 window.addEventListener("load", function () {
-
     // initializes the canvas
     const canvas = document.getElementById("canvas1");
     canvas.width = window.innerWidth;
@@ -12,6 +12,7 @@ window.addEventListener("load", function () {
     let stage = 0;
     // stores the team that is chosen, starts as empty team ""
     let team = "";
+    let win = false;
 
     const buttonWidth = 100;
     const buttonHeight = 100;
@@ -41,6 +42,14 @@ window.addEventListener("load", function () {
                 if (stage === 2 && e.touches[0].clientX > canvas.width / 2 - buttonWidth / 2 && e.touches[0].clientX < canvas.width / 2 + buttonWidth / 2 && e.touches[0].clientY > canvas.height * 4 / 5 && e.touches[0].clientY < canvas.height * 4 / 5 + buttonHeight && ball.isKicked()) {
                     reset();
                 }
+                if (stage === 2 && win === true){
+                    stage++;
+                }
+                /*if (stage === 3 && e.touches[0].clientX > canvas.width / 2 - buttonWidth / 2 && e.touches[0].clientX < canvas.width / 2 + buttonWidth / 2 && e.touches[0].clientY > canvas.height * 4 / 5 && e.touches[0].clientY < canvas.height * 4 / 5 + buttonHeight) {
+                    stage = 2;
+                    reset();
+                }
+                */
 
             });
 
@@ -195,6 +204,21 @@ window.addEventListener("load", function () {
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
     }
+
+    class QR {
+        constructor(gameWidth, gameHeight, x, y) {
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.width = gameWidth / 2;
+            this.height = gameWidth / 2;
+            this.x = x - this.width / 2;
+            this.y = y - this.height / 2;
+            this.image = document.getElementById("qrCode");
+        }
+        draw(context) {
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        }
+    }
     // class creating object for a single fan
     class Fan {
         constructor(gameWidth, gameHeight, x, y) {
@@ -207,9 +231,15 @@ window.addEventListener("load", function () {
             this.initialY = this.y;
             this.falling = false;
         }
-        draw(context, color) {
-            context.fillStyle = color;
-            context.fillRect(this.x, this.y, this.width, this.height);
+        draw(context, color){
+
+            if (color == "red"){
+                this.image = document.getElementById("tree");
+            }
+            else{
+                this.image = document.getElementById("bear");
+            }
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
 
         jump() {
@@ -269,6 +299,38 @@ window.addEventListener("load", function () {
         }
     }
 
+    class LoadLeft {
+        constructor(gameWidth, gameHeight, x, y) {
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.width = gameWidth;
+            this.height = gameHeight;
+            this.x = x - this.width/2;
+            this.y = y - this.height/2;
+            this.image = document.getElementById("loadLeft");
+
+        }
+        draw(context) {
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+         }
+    }
+
+    class LoadRight {
+        constructor(gameWidth, gameHeight, x, y) {
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.width = gameWidth;
+            this.height = gameHeight;
+            this.x = x - this.width/2;
+            this.y = y - this.height/2;
+            this.image = document.getElementById("loadRight");
+
+        }
+        draw(context) {
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+         }
+    }
+
     class Button {
         constructor(gameWidth, gameHeight, x, y, width, height) {
             this.gameWidth = gameWidth;
@@ -277,7 +339,15 @@ window.addEventListener("load", function () {
             this.height = height;
             this.x = x - this.width / 2;
             this.y = y;
-            this.image = document.getElementById("retryButton");
+            if(stage == 2){
+                //retry when on field goal page
+                this.image = document.getElementById("retryButton");    
+            }
+            else{
+                //funny gradescope submit when on username page
+                this.image = document.getElementById("submit");
+
+            }
         }
         draw(context) {
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -314,13 +384,15 @@ window.addEventListener("load", function () {
     }
 
     function animate() {
-
+        let id = requestAnimationFrame(animate);
         // first stage of game
         if (stage === 0) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             // draws the start graphic (axe picture)
-            const axe = new Axe(canvas.width, canvas.height, canvas.width / 2, canvas.height / 2);
-            axe.draw(ctx);
+            const leftlogo = new LoadLeft(canvas.width, canvas.height, canvas.width / 2, canvas.height / 2);
+            leftlogo.draw(ctx);
+            const rightlogo = new LoadRight(canvas.width, canvas.height, canvas.width / 2, canvas.height / 2);
+            rightlogo.draw(ctx);
             // draws the welcome sign and moves it up and down
             welcomeSign.draw(ctx);
             if (welcomeSign.getY() >= canvas.height * 3 / 4) {
@@ -379,6 +451,11 @@ window.addEventListener("load", function () {
                     // if kick is good, prints message on screen that player has scored for their chosen team
                     if (ball.getX() > fieldgoal.getX() + fieldgoal.getWidth() * 0.1 && ball.getX() < fieldgoal.getX() + fieldgoal.getWidth() - fieldgoal.getWidth() * 0.1) {
                         ctx.font = "30px Trebuchet MS";
+                        //win = true;
+
+                        const qr = new QR(canvas.width/2, canvas.height/2, canvas.width / 5, canvas.height * 3/ 5);
+                        qr.draw(ctx);
+
                         if (team === "stanford") {
                             ctx.fillStyle = "red";
                         }
@@ -386,7 +463,10 @@ window.addEventListener("load", function () {
                             ctx.fillStyle = "navy";
                         }
                         ctx.textAlign = "center";
-                        ctx.fillText("You scored for " + team.toUpperCase(), canvas.width / 2, canvas.height * 4 / 5);
+                        ctx.fillText("You scored +3 for " + team.toUpperCase(), canvas.width / 2, canvas.height * 4 / 5);
+                        const retryButton = new Button(canvas.width, canvas.height, canvas.width / 2, canvas.height * 4 / 5, buttonWidth, buttonHeight);
+                        retryButton.draw(ctx);
+
                         // makes fans jump up and down
                         for (let i = 0; i < fans.length; i++) {
                             if (fans[i].getOffset() === 0) {
@@ -417,13 +497,45 @@ window.addEventListener("load", function () {
             }
         }
 
+        // fourth stage of game, game over
+        if (stage === 3) {
+            cancelAnimationFrame(id);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (team === "stanford") {
+                ctx.fillStyle = "red";
+            }
+            if (team === "cal") {
+                ctx.fillStyle = "navy";
+            }
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.fillText("YOU SCORED FOR " + team.toUpperCase() + "!", canvas.width / 2, canvas.height / 8);
+            
+            let div = document.getElementById("inputContainer");
+            let input = document.createElement("input");
+            input.style.height = "50px";
+            input.style.width = "200px";
+            input.type = "text";
+            input.placeholder = "Enter a username";
+            div.appendChild(input);
 
-        // animates this function (animate), so that it runs repeatedly
-        requestAnimationFrame(animate);
+            ctx.fillText("Screenshot and Share!", canvas.width / 2, canvas.height * 1.2 / 4);
+
+            const qr = new QR(canvas.width/2, canvas.height/2, canvas.width / 2, canvas.height * 2.5 / 4);
+            qr.draw(ctx);
+            //make submit button which SHOULD capture text and reset game. 
+            //HIGH PRIO is reset game, can you fix? meddled with line 48; currently doesnt work
+            const submitButton = new Button(canvas.width, canvas.height, canvas.width * 1.2/ 2, canvas.height /7, buttonWidth, buttonHeight/2);
+            submitButton.draw(ctx);
+            
+
+        }        
 
     }
 
     function reset() {
+        //set to 2 so we can reset from end screen as well
+        stage = 2;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ball.reset();
         input.resetKeys();
@@ -436,7 +548,6 @@ window.addEventListener("load", function () {
 
 
 });
-
 
 
 
