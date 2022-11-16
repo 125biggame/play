@@ -369,8 +369,8 @@ window.addEventListener("load", function () {
     const fans = [];
     //for loop that draws 5 rows of 10 fans in the top half of the screen and adds them to the fans array
     for (let i = 0; i < 5; i++) {
-        for (let j = 0; j < 10; j++) {
-            fans.push(new Fan(canvas.width, canvas.height, canvas.width * (j + 1) / 11, canvas.height * (i + 1) / 11));
+        for (let j = 0; j < 5; j++) {
+            fans.push(new Fan(canvas.width*2, canvas.height*2, canvas.width * (j + 1) / 6, canvas.height * (i + 1) / 11));
         }
     }
     // object representing the welcome sign in stage 1
