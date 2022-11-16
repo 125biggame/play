@@ -1,5 +1,6 @@
 // implementation of The Big Game
 // runs code once all images have been loaded, ensures that game doesnt start without graphics being available
+document.addEventListener('touchstart', {}); // in iframe
 window.addEventListener("load", function () {
 
     // initializes the canvas
