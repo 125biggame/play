@@ -1,6 +1,5 @@
 // implementation of The Big Game
 // runs code once all images have been loaded, ensures that game doesnt start without graphics being available
-window.addEventListener('touchstart', {}); // in top window
 window.addEventListener("load", function () {
     
 
