@@ -453,7 +453,7 @@ window.addEventListener("load", function () {
                 if (ball.kick()) {
                     // if kick is good, prints message on screen that player has scored for their chosen team
                     if (ball.getX() > fieldgoal.getX() + fieldgoal.getWidth() * 0.1 && ball.getX() < fieldgoal.getX() + fieldgoal.getWidth() - fieldgoal.getWidth() * 0.1) {
-                        ctx.font = "30px Trebuchet MS";
+                        ctx.font = "60px Trebuchet MS";
                         //win = true;
 
                         const qr = new QR(canvas.width/2, canvas.height/2, canvas.width / 5, canvas.height * 3/ 5);
