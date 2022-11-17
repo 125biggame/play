@@ -99,7 +99,7 @@ window.addEventListener("load", function () {
             }
 
             if (!this.fall) {
-                this.y -= 5;
+                this.y -= 10;
             }
 
             if (this.fall) {
