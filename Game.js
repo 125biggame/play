@@ -466,8 +466,8 @@ window.addEventListener("load", function () {
                             ctx.fillStyle = "navy";
                         }
                         ctx.textAlign = "center";
-                        ctx.fillText("You scored +3 for " + team.toUpperCase(), canvas.width / 2, canvas.height * 3 / 5);
-                        ctx.fillText("See if your friends can make it ;) ", canvas.width / 2, canvas.height * 4 / 5);
+                        ctx.fillText("You scored +3 for " + team.toUpperCase(), canvas.width / 2, canvas.height * 4 / 5);
+                        ctx.fillText("See if your friends can make it ;) ", canvas.width / 2, canvas.height * 5 / 5);
 
                         const retryButton = new Button(canvas.width, canvas.height, canvas.width / 2, canvas.height * 4 / 5, buttonWidth, buttonHeight);
                         retryButton.draw(ctx);
