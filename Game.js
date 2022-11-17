@@ -103,7 +103,7 @@ window.addEventListener("load", function () {
             }
 
             if (this.fall) {
-                this.y += 3;
+                this.y += 6;
                 if (this.y >= this.gameHeight / 2) {
                     this.width = 0;
                     this.height = 0;
