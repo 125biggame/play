@@ -65,7 +65,7 @@ window.addEventListener("load", function () {
             this.gameHeight = gameHeight;
             this.width = 45;
             this.height = 75;
-            this.dx = 5;
+            this.dx = 10;
             this.fall = false;
             this.x = gameWidth / 2 - this.width / 2;
             this.y = gameHeight * 6 / 7;
@@ -99,7 +99,7 @@ window.addEventListener("load", function () {
             }
 
             if (!this.fall) {
-                this.y -= 10;
+                this.y -= 15;
             }
 
             if (this.fall) {
