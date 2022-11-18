@@ -119,9 +119,10 @@ window.addEventListener("load", function () {
             if (ghost === false) {
                 this.image = document.getElementById("footballImage");
             }
-            else {
+            /*else {
                 this.image = document.getElementById("ghostballImage");
             }
+            */
         }
 
         draw(context) {
@@ -377,11 +378,12 @@ window.addEventListener("load", function () {
                 //retry when on field goal page
                 this.image = document.getElementById("retryButton");    
             }
-            else{
+            /*else{
                 //funny gradescope submit when on username page
                 this.image = document.getElementById("submit");
 
             }
+            */
         }
         draw(context) {
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -581,39 +583,7 @@ window.addEventListener("load", function () {
             }
         }
 
-        // fourth stage of game, game over
-        if (stage === 3) {
-            cancelAnimationFrame(id);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (team === "stanford") {
-                ctx.fillStyle = "red";
-            }
-            if (team === "cal") {
-                ctx.fillStyle = "navy";
-            }
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            ctx.fillText("YOU SCORED FOR " + team.toUpperCase() + "!", canvas.width / 2, canvas.height / 8);
             
-            let div = document.getElementById("inputContainer");
-            let input = document.createElement("input");
-            input.style.height = "50px";
-            input.style.width = "200px";
-            input.type = "text";
-            input.placeholder = "Enter a username";
-            div.appendChild(input);
-
-            ctx.fillText("Screenshot and Share!", canvas.width / 2, canvas.height * 1.2 / 4);
-
-            const qr = new QR(canvas.width/2, canvas.height/2, canvas.width / 2, canvas.height * 2.5 / 4);
-            qr.draw(ctx);
-            //make submit button which SHOULD capture text and reset game. 
-            //HIGH PRIO is reset game, can you fix? meddled with line 48; currently doesnt work
-            const submitButton = new Button(canvas.width, canvas.height, canvas.width * 1.2/ 2, canvas.height /7, buttonWidth, buttonHeight/2);
-            submitButton.draw(ctx);
-            
-
-        }        
 
     }
 
