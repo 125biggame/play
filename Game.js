@@ -16,9 +16,9 @@ window.addEventListener("load", function () {
         localStorage.stanfordScore = scoreDefault + scoreAccumulatedByTime + Number(localStorage.userS);
         //random gap only 10 when refreshing so doenst look suspicious
         //also "its getting closer!!"
-        const sameGap = 10
-
-        localStorage.berkeleyScore = Number(localStorage.stanfordScore) + (Math.floor(Math.random() * (sameGap + sameGap) ) - sameGap) + Number(localStorage.userB);    
+        const sameGap = 30
+        //add userB and subtract userS because the random is on top of stanfordScore and its call to userS.
+        localStorage.berkeleyScore = Number(localStorage.stanfordScore) + (Math.floor(Math.random() * (sameGap + sameGap) ) - sameGap) + Number(localStorage.userB) - Number(localStorage.userS);    
         //quarter minutes in integer since "start of day" or whenever we want (for math).
         //*so every 15sec score will update "serverside"
         localStorage.quarterMinutesSince = timeAccumulated;
@@ -33,7 +33,7 @@ window.addEventListener("load", function () {
     else{
         localStorage.stanfordScore = scoreDefault + scoreAccumulatedByTime;
         //makes berkeley score within stanford by gap; random -gap to +gap
-        const gap = 20
+        const gap = 30
         localStorage.berkeleyScore = Number(localStorage.stanfordScore) + Math.floor(Math.random() * (gap + gap) ) - gap;       
         localStorage.quarterMinutesSince = timeAccumulated;
         localStorage.currentTime = time;
@@ -330,21 +330,8 @@ window.addEventListener("load", function () {
             return this.y;
         }
     }
-    // class creating object for the axe sign
-    class Axe {
-        constructor(gameWidth, gameHeight, x, y) {
-            this.gameWidth = gameWidth;
-            this.gameHeight = gameHeight;
-            this.width = gameWidth / 2;
-            this.height = gameHeight / 3;
-            this.x = x - this.width / 2;
-            this.y = y - this.height / 2;
-            this.image = document.getElementById("axeImage");
-        }
-        draw(context) {
-            context.drawImage(this.image, this.x, this.y, this.width, this.height);
-        }
-    }
+    // removed class creating object for the axe sign
+    
 
     class LoadLeft {
         constructor(gameWidth, gameHeight, x, y) {
@@ -438,7 +425,7 @@ window.addEventListener("load", function () {
         // first stage of game
         if (stage === 0) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // draws the start graphic (axe picture)
+            // draws the start graphic 
             const leftlogo = new LoadLeft(canvas.width, canvas.height, canvas.width / 2, canvas.height / 2);
             leftlogo.draw(ctx);
             const rightlogo = new LoadRight(canvas.width, canvas.height, canvas.width / 2, canvas.height / 2);
@@ -463,7 +450,7 @@ window.addEventListener("load", function () {
             //start from canvas.height "bottom of page" and draw in negative direction "up"
             if(localStorage.scoreDiff > 0){
                 ctx.fillStyle = "red";
-                ctx.fillRect(0, canvas.height, canvas.width / 2, canvas.height * -1 * 1/2 - (localStorage.scoreDiff * 5));
+                ctx.fillRect(0, canvas.height, canvas.width / 2, canvas.height * -1 * 1/2 - (localStorage.scoreDiff * 4));
                 ctx.fillStyle = "navy";
                 ctx.fillRect(canvas.width / 2, canvas.height, canvas.width / 2, canvas.height * -1 * 1/2);
 
@@ -472,7 +459,7 @@ window.addEventListener("load", function () {
                 ctx.fillStyle = "red";
                 ctx.fillRect(0, canvas.height, canvas.width / 2, canvas.height * -1 * 1/2);
                 ctx.fillStyle = "navy";
-                ctx.fillRect(canvas.width / 2, canvas.height, canvas.width / 2, canvas.height * -1 * 1/2  + (localStorage.scoreDiff * 5));
+                ctx.fillRect(canvas.width / 2, canvas.height, canvas.width / 2, canvas.height * -1 * 1/2  + (localStorage.scoreDiff * 4));
                 
             }
 
