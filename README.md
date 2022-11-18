@@ -5,3 +5,5 @@
 #v2.0 1:18pm 11/18/2022 w/ scorebars, tracking User scores, localStorage funcitonality
 
 #v2.1 1:33pm bigger fonts
+
+#v2.2 2:25pm score fixed "on top", bloat removed
